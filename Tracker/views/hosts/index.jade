@@ -1,0 +1,8 @@
+h1 Showing #{hosts.length} Hosts
+ul 
+- for( var i = 0; i < hosts.length; i++)
+  li
+    a{href:"#"} 
+      span.id= hosts[i].id
+      span.ip= hosts[i].ip
+      span.port= hosts[i].port
