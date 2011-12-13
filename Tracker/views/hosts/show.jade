@@ -6,3 +6,6 @@ ul
       span.id= hosts[i].id
       span.ip= hosts[i].ip
       span.port= hosts[i].port
+      ul 
+      - for( var i = 0; i < hosts.sources.length; i++)
+        li= "source: " + i

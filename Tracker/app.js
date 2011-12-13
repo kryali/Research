@@ -68,6 +68,7 @@ app.get('/hosts/', function(req, res) {
   });
 });
 
+// This should become post soon
 app.get('/hosts/:id', function(req, res) {
   var id = req.params.id;
   if( id <= host_id ) {
@@ -78,9 +79,25 @@ app.get('/hosts/:id', function(req, res) {
     });
   } else {
     res.render('error', {
+      title: "Error",
       error: "Couldn't find host id" + req.params.id
     });
   }
+});
+
+app.get('/hosts/:id/client/new', function(req, res) {
+  var id = req.params.id;
+  // TODO: check to see id is within bounds
+  var host = hosts[id];
+  var client = { 
+    id: 0,
+    type: 'CLIENT',
+    start_time: 0,
+    bandwidth: 100,
+    ip: '192.168.1.1',
+    port: 8000,
+  };
+  host.sources.push(client);
 });
 
 // Only listen on $ node app.js
