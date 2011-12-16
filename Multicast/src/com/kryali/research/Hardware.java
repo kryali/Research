@@ -3,19 +3,53 @@ package com.kryali.research;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.net.URL;
 import java.util.UUID;
+
+import org.json.JSONStringer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.util.Log;
+
+import com.kryali.research.Network.TransferManager;
 
 
 // SOURCE: http://stackoverflow.com/questions/3118234/how-to-get-memory-usage-and-cpu-usage-in-android
 public class Hardware {
 	private static final String TAG = "Hardware";
+	
+	public static String getProcessor() {
+        //RandomAccessFile reader = new RandomAccessFile("/proc/stat", "r");
+		//cat /proc/cpuinfo | grep Processor | sed '/.*:/s/.*://g'
+		return null;
+	}
+	
+	public static int getBandwidth(Context context) {
+		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		if (wifiInfo != null) {
+		    return wifiInfo.getLinkSpeed(); //measured using WifiInfo.LINK_SPEED_UNITS
+		}
+		return -1;
+	}
+    
+    public static String getDHCP( Context context) {
+		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		DhcpInfo dhcp = wifiManager.getDhcpInfo();
+		if (dhcp != null) {
+		    return dhcp.toString(); //measured using WifiInfo.LINK_SPEED_UNITS
+		}
+		return null;
+    }
+    
 	
 	public static float getCPUUtil() {
 	    try {
@@ -81,6 +115,45 @@ public class Hardware {
             }
         }
         return uniqueID;
+    }
+    
+    public static String getIP() throws Exception {
+
+		URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+		                whatismyip.openStream()));
+		
+		String ip = in.readLine(); //you get the IP as a String
+		return ip;
+    }
+    
+    public static String toJSONString( Context context ) {
+    	JSONStringer json = new JSONStringer();
+    	try {
+        	json.object();
+            //InetAddress addr = InetAddress.getLocalHost();
+            //String hostname = getIP();//addr.getHostAddress();//addr.getHostName();
+        	String hostname = getIP();//addr.getHostAddress();//addr.getHostName();
+        	String dhcp = getDHCP(context);
+        	int bandwidth = getBandwidth( context );
+			json
+				.key("id").value( id(context) )
+				.key("board").value(Build.BOARD)
+				.key("manufacturer").value(Build.MANUFACTURER)
+				.key("display").value(Build.DISPLAY)
+				.key("model").value(Build.MODEL)
+				.key("user").value(Build.USER)
+				.key("cpu").value(Build.CPU_ABI)
+				.key("product").value(Build.PRODUCT)
+				.key("hostname").value(hostname)
+				.key("port").value(TransferManager.PORT)
+				.key("link speed").value(bandwidth + " Mbps")
+				.key("dhcp data").value( dhcp );
+			json.endObject();
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+    	return json.toString();
     }
 
     public static void LogState() {

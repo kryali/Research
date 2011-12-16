@@ -1,4 +1,7 @@
 package com.kryali.research;
+import com.kryali.research.Client.ClientActivity;
+import com.kryali.research.Host.HostActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
