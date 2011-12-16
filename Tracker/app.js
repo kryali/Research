@@ -31,6 +31,7 @@ host_id = 0;
 
 // Routes
 app.get('/', function(req, res){
+  res.redirect('/hosts/');
   res.render('index', {
     title: 'Express'
   });

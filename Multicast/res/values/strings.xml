@@ -3,5 +3,8 @@
 
     <string name="hello">Hello World, MulticastActivity!</string>
     <string name="app_name">Multicast</string>
+    
+    <string name="host_placeholder">This is the host view</string>
+    <string name="client_placeholder">This is the client view</string>
 
 </resources>
