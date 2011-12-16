@@ -1,7 +1,12 @@
-h1 #{host.id}
+h1 #{host['model'] + " (" + host.hostname + ")" }
 ul.info 
   - for( var data_key in host )
-    - if( data_key != "id" )
       li
         span.label #{ data_key }
         span.title #{ host[data_key] }
+h1 Nodes
+ol
+  - for( var i in host.nodes )
+    - var node = host.nodes[i]
+    li
+      a(href=host.id+'/nodes/'+node.id)= node.model

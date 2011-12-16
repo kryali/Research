@@ -1,5 +1,6 @@
 h1 Showing Hosts
 ol 
-  - for( var id in hosts)
+  - for( var host_index in hosts)
+    - var host = hosts[host_index];
     li
-      a(href=id)= id
+      a(href=host['id'])= host['model'] + " ("+ host['hostname'] + ")"
