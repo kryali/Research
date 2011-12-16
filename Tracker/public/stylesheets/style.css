@@ -6,3 +6,21 @@ body {
 a {
   color: #00B7FF;
 }
+
+ul.info {
+
+}
+  ul.info li {
+    margin: 1em;
+    list-style-type: none;
+  }
+    ul.info li span.label {
+      font-weight: bold;
+      width: 100px;
+      text-align: right;
+      display: inline-block;
+    }
+    ul.info li span.title {
+      margin-left: 1em;
+      text-align: left;
+    }
