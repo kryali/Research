@@ -7,14 +7,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class MainMenuActivity extends Activity {
-    /** Called when the activity is first created. */
+    private String TAG = "MainMenuActivity";
+	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_menu);
         setUpListeners();
     }
-    
+       
     private void setUpListeners() {
     	Button host = (Button) findViewById(R.id.host_button);
     	Button client = (Button) findViewById(R.id.client_button);
