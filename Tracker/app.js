@@ -26,15 +26,11 @@ app.configure('production', function(){
   app.use(express.errorHandler()); 
 });
 
-hosts = [];
-host_id = 0;
+hosts = {};
 
 // Routes
 app.get('/', function(req, res){
   res.redirect('/hosts/');
-  res.render('index', {
-    title: 'Express'
-  });
 });
 
 app.get('/clients', function(req, res) {
@@ -43,23 +39,11 @@ app.get('/clients', function(req, res) {
   });
 });
 
-app.get('/hosts/new', function(req, res) {
-  console.log( "Received new host" );
-  host = { 
-    id: host_id,
-    type: 'CLIENT',
-    start_time: 0,
-    bandwidth: 100,
-    ip: '192.168.1.1',
-    port: 8000,
-    clients: []
-  };
-  host_id++;
-  hosts.push( host );
-
-  res.render('index', {
-    title: 'Added host: ' + host.id
-  });
+app.post('/hosts/new', function(req, res) {
+  console.log( "Received host post" );
+  console.log( req.body );
+  hosts[req.body.id] = req.body;
+  res.send("Got request");
 });
 
 app.get('/hosts/', function(req, res) {
@@ -69,10 +53,17 @@ app.get('/hosts/', function(req, res) {
   });
 });
 
+app.get('/hosts.:format?', function( req, res ) {
+  if( req.params.format == 'json' ) {
+    console.log( "Json request received");
+    res.send( hosts , {'Content-Type':'application/json'}, 200);
+  };
+});
+
 // This should become post soon
 app.get('/hosts/:id', function(req, res) {
   var id = req.params.id;
-  if( id <= host_id ) {
+  if( hosts[id] != undefined ) {
     var host = hosts[id];
     res.render('hosts/show', {
       title: 'Showing host id ' + req.params.id,
@@ -104,6 +95,6 @@ app.get('/hosts/:id/client/new', function(req, res) {
 // Only listen on $ node app.js
 
 if (!module.parent) {
-  app.listen(3000);
-  console.log("Express server listening on port %d", app.address().port);
+  app.listen(20000);
+  console.log("Express server listening on port 20000");
 }

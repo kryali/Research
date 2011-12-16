@@ -1,11 +1,7 @@
-h1 Showing host #{host.id} Hosts
-ul 
-- for( var i = 0; i < hosts.length; i++)
-  li
-    a{href:"#"} 
-      span.id= hosts[i].id
-      span.ip= hosts[i].ip
-      span.port= hosts[i].port
-      ul 
-      - for( var i = 0; i < hosts.sources.length; i++)
-        li= "source: " + i
+h1 #{host.id}
+ul.info 
+  - for( var data_key in host )
+    - if( data_key != "id" )
+      li
+        span.label #{ data_key }
+        span.title #{ host[data_key] }

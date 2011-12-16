@@ -1,3 +1,4 @@
 */*.swp
 Multicast/bin
 Tracker/node_modules
+Tracker/*.swp
