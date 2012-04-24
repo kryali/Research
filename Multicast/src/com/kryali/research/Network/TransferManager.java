@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.util.Log;
 
 /*
@@ -71,5 +74,17 @@ public class TransferManager {
 			if(conn != null)
 				conn.disconnect();
 		}
+	}
+	
+	public static void deregister( String id ) {
+		JSONObject data = new JSONObject();
+		try {
+			data.put("id", id);
+			data.put("action", "deregister");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		String payload = data.toString();
+		TransferManager.POST( URLS.remHost(), payload);
 	}
 }

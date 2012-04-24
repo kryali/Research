@@ -8,6 +8,7 @@ import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.UUID;
 
+import org.json.JSONObject;
 import org.json.JSONStringer;
 
 import android.content.Context;
@@ -127,7 +128,7 @@ public class Hardware {
 		return ip;
     }
     
-    public static String toJSONString( Context context ) {
+    public static JSONStringer toJSONObject(Context context ) {
     	JSONStringer json = new JSONStringer();
     	try {
         	json.object();
@@ -153,7 +154,11 @@ public class Hardware {
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
-    	return json.toString();
+		return json;
+    }
+    
+    public static String toJSONString( Context context ) {
+    	return toJSONObject(context).toString();
     }
 
     public static void LogState() {

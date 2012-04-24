@@ -1,10 +1,14 @@
 package com.kryali.research;
-import com.kryali.research.Client.ClientActivity;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.kryali.research.Client.ClientListActivity;
 import com.kryali.research.Host.HostActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +41,7 @@ public class MainMenuActivity extends Activity {
     private OnClickListener clientClickListener = new OnClickListener() {
 
 		public void onClick(View arg0) {
-			Intent i = new Intent(MainMenuActivity.this, ClientActivity.class);
+			Intent i = new Intent(MainMenuActivity.this, ClientListActivity.class);
 			startActivity(i);
 		}
     };

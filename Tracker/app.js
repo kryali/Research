@@ -41,6 +41,17 @@ function add_host( hosts, host ) {
   hosts.push(host);
 }
 
+function remove_host( hosts, host_id ) {
+  for( var i = 0 ; i < hosts.length; i++) {
+    var current_host = hosts[i];
+    if( host_id == current_host.id) {
+      hosts.splice(i, 1);
+      console.log("Removing host with id: " + host_id);
+      return;
+    }
+  }
+}
+
 function find_host( hosts, host_id ) {
   for( var i = 0 ; i < hosts.length; i++) {
     if(hosts[i]['id'] == host_id) {
@@ -94,6 +105,18 @@ app.post('/hosts/new', function(req, res) {
   res.send("Got request");
 });
 
+
+app.post('/hosts/remove', function(req, res) {
+  console.log( "Received host remove" );
+  console.log( req.body );
+  var host_id = req.body.id;
+  if( req.body.action == "deregister" )
+    remove_host( hosts, host_id );
+  //req.body['start time'] = new Date(req.body['start time']);
+  //hosts[req.body.id] = req.body;
+  res.send("Got request");
+});
+
 app.get('/hosts/', function(req, res) {
   res.render('hosts/index', {
     title: 'AV Hosts',
@@ -106,6 +129,31 @@ app.get('/hosts.:format?', function( req, res ) {
     console.log( "Json request received");
     res.send( { hosts: hosts } , {'Content-Type':'application/json'}, 200);
   };
+});
+
+// This should become post soon
+app.get('/hosts/:id.:format?', function(req, res) {
+  var id = req.params.id;
+  var host = find_host( hosts, id );
+  if( req.params.format == 'json' ) {
+    if( host != undefined ) {
+      res.send( { status: 'Success', host: host } , {'Content-Type':'application/json'}, 200);
+    } else {
+      res.send( { status: 'Error', message: "Couldn't find host id" + id  } , {'Content-Type':'application/json'}, 200);
+    }
+  } else {
+    if( host != undefined ) {
+      res.render('hosts/show', {
+        title: 'Showing host id ' + req.params.id,
+        host: host
+      });
+    } else {
+      res.render('error', {
+        title: "Error",
+        error: "Couldn't find host id" + req.params.id
+      });
+    }
+  }
 });
 
 // This should become post soon
@@ -149,11 +197,17 @@ app.get('/hosts/:host_id/nodes/:node_id', function(req, res) {
 
 app.post('/hosts/:id/client/new', function(req, res) {
   console.log( "Got new client request" );
+  console.log( req.params );
+  console.log( req.body );
   var id = req.params.id;
   var host = find_host( hosts, id );
   if( host != undefined ) {
     var node = req.body;
     add_node( host, node );
+    console.log(" client added to host ");
+    console.log( host );
+  } else {
+    console.log(" Could not find host " + id );
   }
 });
 

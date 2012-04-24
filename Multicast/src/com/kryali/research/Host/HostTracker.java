@@ -1,5 +1,8 @@
 package com.kryali.research.Host;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -17,6 +20,7 @@ public class HostTracker extends Thread {
 	private Context context;
 	private boolean keepAlive = false;
 	private String TAG = HostTracker.class.getSimpleName();
+	private String id;
 
 	/*
 	 * Constructor
@@ -25,6 +29,13 @@ public class HostTracker extends Thread {
 		this.context = context;
 		keepAlive = true;
 		this.start();
+	}
+	
+	private String getDeviceId() {
+		if( id == null) {
+			id = Hardware.id(context);
+		}
+		return id;
 	}
 
 	public void shutdown() {
@@ -38,16 +49,30 @@ public class HostTracker extends Thread {
 		TransferManager.POST( URLS.getNewHostURL(), hardwareJSON );
 	}
 
-
+	public void deregister() {
+		Log.i(TAG, "DEREGISTER with tracker");
+		TransferManager.deregister(getDeviceId());
+	}
+	
+	public JSONArray getClients() {
+		String jsonData = TransferManager.GET( URLS.getClientsURL(getDeviceId()) );
+		JSONArray data = null;
+		try {
+			data = new JSONArray(jsonData);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return data;
+	}
 	public void run() {
 		register();
 		while ( keepAlive ) {
 			// TODO: Talk to the server
-			Log.i(TAG, "Tracker alive");
+//			Log.i(TAG, "Tracker alive");
 			try {
 				Thread.sleep(2500);
-			} catch (Exception ignored) {
-			}
+			} catch (Exception ignored) {}
 		}
+		deregister();
 	}
 }
