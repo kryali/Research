@@ -120,12 +120,13 @@ public class Hardware {
     
     public static String getIP() throws Exception {
 
-		URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-		                whatismyip.openStream()));
-		
-		String ip = in.readLine(); //you get the IP as a String
-		return ip;
+//		URL whatismyip = new URL("http://automation.whatismyip.com/n09230945.asp");
+//		BufferedReader in = new BufferedReader(new InputStreamReader(
+//		                whatismyip.openStream()));
+//		
+//		String ip = in.readLine(); //you get the IP as a String
+//		return ip;
+    	return "192.1.1.1";
     }
     
     public static JSONStringer toJSONObject(Context context ) {

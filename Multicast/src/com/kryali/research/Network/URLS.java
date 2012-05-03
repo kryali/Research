@@ -2,7 +2,7 @@ package com.kryali.research.Network;
 
 public class URLS {
 	
-	private final static String host = "192.168.1.106";
+	private final static String host = "192.168.1.111";
 	private final static String port = "20000";
 	private final static String hosts = "hosts.json";
 	private final static String newHost = "hosts/new";

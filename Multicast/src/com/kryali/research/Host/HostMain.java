@@ -1,7 +1,6 @@
 package com.kryali.research.Host;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -18,6 +17,7 @@ import android.util.Log;
 import com.kryali.research.Hardware;
 import com.kryali.research.Packet;
 import com.kryali.research.Phone;
+import com.kryali.research.VideoQueueBuffer;
 import com.kryali.research.Client.ClientMain;
 import com.kryali.research.Client.ClientNode;
 import com.kryali.research.Network.TransferManager;
@@ -32,12 +32,16 @@ public class HostMain extends Thread {
 	private LinkedList<Phone> clientNodes;
 	private LinkedList<ClientNode> clients;
 	private boolean streaming = false;
+	private VideoQueueBuffer buffer = null;
+	private int frameId=  0;
 
-	public HostMain(Handler viewHandler, Context viewContext) {
+	public HostMain(Handler viewHandler, Context viewContext,
+			VideoQueueBuffer buffer) {
 		this.viewHandler = viewHandler;
 		this.viewContext = viewContext;
 		clientNodes = new LinkedList<Phone>();
 		clients = new LinkedList<ClientNode>();
+		this.buffer = buffer;
 		this.start();
 	}
 
@@ -128,16 +132,33 @@ public class HostMain extends Thread {
 		Log.i(TAG,"Delivered end signal");
 		streaming = false;
 	}
+	
+	private void sendFrame() {
+		byte[] frame = buffer.getNextFrame();
+		if( frame == null ) return;
+		for( ClientNode client: clients ) {
+			try {
+				ObjectOutputStream stream = client.getOutputStream();
+				stream.writeInt(Packet.FRAME);
+				Log.i(TAG, "Sent Frame " + Packet.FRAME + " - " + frameId + " - "+ frame.length);
+				stream.writeInt(frameId);
+				stream.writeInt(frame.length);
+				stream.write(frame, 0, frame.length);
+				stream.flush();
+				frameId++;
+			} catch ( IOException e ) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Override
 	public void run() {
 		while (keepAlive) {
 			if(streaming) {
-				// TODO: something
+				sendFrame();
 			}
 		}
-		// signalStart();
-		// signalEnd();
 	}
 
 }

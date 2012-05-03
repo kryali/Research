@@ -18,10 +18,13 @@ public class ClientHandler extends Thread {
 	Socket socket;
 	boolean keepAlive = true;
 	Handler viewHandler;
+	private ObjectInputStream inputStream;
+	private VideoClientBuffer buffer;
 
-	public ClientHandler(Socket socket, Handler viewHandler) {
+	public ClientHandler(Socket socket, Handler viewHandler, VideoClientBuffer buffer) {
 		this.socket = socket;
 		this.viewHandler = viewHandler;
+		this.buffer = buffer;
 		keepAlive = true;
 		this.start();
 	}
@@ -33,18 +36,18 @@ public class ClientHandler extends Thread {
 	@Override
 	public void run() {
 		try {
-			ObjectInputStream ois = new ObjectInputStream(
-					socket.getInputStream());
+			inputStream = new ObjectInputStream(socket.getInputStream());
 			while (keepAlive) {
-				int packetType = ois.readInt();
+				int packetType = inputStream.readInt();
 				handlePacket(packetType);
 			}
-			ois.close();
+			inputStream.close();
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+
 	private void signalStart() {
 		Log.i(TAG, "HOST SENT SIGNAL START");
 		Message startMessage = new Message();
@@ -63,14 +66,40 @@ public class ClientHandler extends Thread {
 		this.shutdown();
 	}
 
+	private void acceptFrame() {
+		try {
+			int frameId = inputStream.readInt();
+			int frameLength = inputStream.readInt();
+			Log.i(TAG, "Received a frame id " + frameId + "-" + frameLength);
+			byte[] data = new byte[frameLength];
+			inputStream.readFully(data,0,frameLength);
+			buffer.addFrame(frameId, data);
+//			Log.i(TAG, "Frame: ["+frameId+"]"+" " + data.length);
+			/* Notify the view that a new frame has arrived, might not be necessary 
+			Message startMessage = new Message();
+			Bundle extras = new Bundle();
+			extras.putBoolean(MessageType.FRAME, true);
+			startMessage.setData(extras);
+			this.viewHandler.sendMessage(startMessage);
+			*/
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void handlePacket(int packetType) {
+		Log.i(TAG, "recieved packet: " + packetType );
 		switch (packetType) {
 		case Packet.SIGNAL_START:
 			signalStart();
-			return;
+			break;
 		case Packet.SIGNAL_END:
 			signalEnd();
-			return;
+			break;
+		case Packet.FRAME:
+			acceptFrame();
+			break;
 		}
 	}
 

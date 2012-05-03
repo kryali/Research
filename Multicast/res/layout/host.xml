@@ -1,22 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
-    <SurfaceView
-        android:id="@+id/video_surface_view"
-        android:layout_width="176px"
-        android:layout_height="144px" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true" >
 
-    <Button
-        android:id="@+id/startStream"
+        <SurfaceView
+            android:id="@+id/video_surface_view"
+            android:layout_width="352px"
+            android:layout_height="288px"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Stream" />
-    <Button
-        android:id="@+id/stopStream"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop Stream" />
-</LinearLayout>
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/startStream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start" />
+
+        <Button
+            android:id="@+id/stopStream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop" />
+
+        <SeekBar
+            android:id="@+id/compressionBar"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:progress="20" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quality: " />
+
+            <TextView
+                android:id="@+id/compressionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20%" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

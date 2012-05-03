@@ -9,5 +9,6 @@ public class MessageType {
 	
 	public static final String MainStart = "mainStart";
 	public static final String MainEnd = "mainEnd";
+	public static final String FRAME = "com.kryali.research.videoFrame";
 	
 }

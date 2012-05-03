@@ -21,32 +21,11 @@ public class SurfaceHolderCallback implements Callback {
 	private int width = 352;
 	private int height = 288;
 
-	PreviewCallback mPreviewCallback = new PreviewCallback() {
-		private int COMPRESSION_RATE = 20;
-
-		public void onPreviewFrame(byte[] data, Camera camera) {
-			try {
-				// YuvImage yuvi = new YuvImage(data, ImageFormat.NV21, width,
-				// height, null);
-				// Rect rect = new Rect(0,0,width,height);
-				// BOutputStream bos = new BOutputStream();
-				// yuvi.compressToJpeg(rect, COMPRESSION_RATE , bos);
-				// bos.send_udp(client.getInetAddress().getHostName(),
-				// VideoDecodeThread.PORT);
-				// Log.i(TAG, "sent frame");
-			} catch (Exception e) {
-				Log.e(TAG, e.toString());
-			}
-			;
-		}
-	};
-
-	public SurfaceHolderCallback(SurfaceHolder holder) {
-		this.holder = holder;
-	}
+	private PreviewCallback callback;
 
 	public SurfaceHolderCallback(SurfaceHolder holder, PreviewCallback callback) {
 		this.holder = holder;
+		this.callback = callback;
 	}
 
 	public void initCamera() {
@@ -64,7 +43,7 @@ public class SurfaceHolderCallback implements Callback {
 		mCamera.setParameters(params);
 
 		try {
-			mCamera.setPreviewCallback(mPreviewCallback);
+			mCamera.setPreviewCallback(callback);
 			mCamera.setPreviewDisplay(holder);
 		} catch (Exception e) {
 			Log.e("exception", e.toString());

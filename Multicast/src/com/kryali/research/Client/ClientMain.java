@@ -27,13 +27,16 @@ public class ClientMain extends Thread {
 	private boolean keepAlive = true;
 	private ServerSocketChannel servSock;
 	private LinkedList<ClientHandler> nodeHandlers;
+	private VideoClientBuffer buffer;
 
-	public ClientMain(Handler viewHandler, Context viewContext) {
+
+	public ClientMain(Handler viewHandler, Context viewContext, VideoClientBuffer buffer) {
 		this.viewHandler = viewHandler;
 		this.context = viewContext;
 		// clientTrackerThread = new ClientTracker(viewContext);
 		keepAlive = true;
 		nodeHandlers = new LinkedList<ClientHandler>();
+		this.buffer = buffer;
 		this.start();
 	}
 
@@ -62,7 +65,7 @@ public class ClientMain extends Thread {
 				if (socketChannel != null) {
 					Log.i(TAG, "Got a connection!");
 					ClientHandler handler = new ClientHandler(
-							socketChannel.socket(), viewHandler);
+							socketChannel.socket(), viewHandler, buffer);
 					nodeHandlers.add(handler);
 				}
 			} catch (IOException e) {
